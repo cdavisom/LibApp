@@ -1,0 +1,84 @@
+{% extends '../layout/base.html' %}
+
+{% block title %}Books Home Page{% endblock title %}
+{% block content %}
+    <div class="row m-3">
+        {% if last %}
+        <h5>Last Added/Updated: {{last.title}} {{last.isbn}}</h5>
+        {% endif %}
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Books</div>
+                <div class="card-body">
+                    <h5 class="card-title edit"></h5>
+                    <form action="save" method="post">{% csrf_token %}
+                        <div class="row">
+                            <input type="hidden" name="id" id="book-id">
+                            <div class="col">
+                                <label for="title" class="form-label">Book's Name</label>
+                                <input type="text" class="form-control" id="title" name="title">
+                            </div>
+                            <div class="col">
+                                <label for="isbn" class="form-label">Book's ISBN</label>
+                                <input type="text" class="form-control" id="isbn" name="isbn">
+                            </div>
+                            <div class="col">
+                                <label for="author" class="form-label">Book's Author</label>
+                                <select name="author_id" class="form-select" aria-label="Default select example" id="author">
+                                    {% for author in authors %}
+                                    <option value={{author.id}}>{{author.first_name}} {{author.last_name}}</option>
+                                    {% endfor %}
+                                </select>                                       
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="btn-group mt-2 col-4" role="group" aria-label="Basic example">
+                                <button type="submit" class="btn btn-outline-primary">Save</button>
+                                <button type="button" onclick="resetBook()" class="btn btn-outline-primary">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% for book in books %}
+        <div class="col-auto mx-1 my-1">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">{{book.title}}</h6>
+                    <h6 class="card-title">{{book.isbn}}</h6>
+                    <h6 class="card-title">{{book.author.first_name}} {{book.author.last_name}}</h6>
+                    <a onclick='editBook("{{book.title}}", "{{book.isbn}}", "{{book.id}}", "{{book.author.id}}")' class="card-link">Edit</a>
+                    <a onclick='removeBook("{{book.id}}")' class="card-link">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+    </div>
+
+    <script>
+
+        function editBook(title, isbn, id, author){
+            $(".edit").text("Editing: " + title + " " + isbn);
+            $("#title").val(title);
+            $("#isbn").val(isbn);
+            $("#book-id").val(id);
+            $("#author").val(author);
+        };
+
+        function resetBook(){
+            $(".edit").text("");
+            $("#title").val("");
+            $("#isbn").val("");
+            $("#book-id").val("");
+            $("#author").val("");
+        };
+
+        function removeBook(id){
+            window.location.href = 'remove?id='+id;
+        };
+
+    </script>
+    
+{% endblock content %}

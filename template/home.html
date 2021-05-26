@@ -1,0 +1,47 @@
+{% extends './layout/base.html' %}
+
+{% block title %}Home Page{% endblock title %}
+{% block content %}
+
+<div class="container-lg">
+
+    <div class="row">
+        <form action="search/" method="post">{% csrf_token %}
+            <div class="col input-group m-3">
+                <input type="text" class="form-control" placeholder="Find Books and Authors" name="search">
+                <button class="btn btn-outline-secondary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+    {% for author in authors %}
+    <div class="row">
+        <div class="col my-2">
+            <div class="card">
+                <div class="card-header">{{author.first_name}} {{author.last_name}}</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for book in books %}
+                            {% if book.author.id == author.id%}
+                            <li class="list-group-item">{{book.title}} | {{book.isbn}} <a href="#" class="card-link">Edit</a><a onclick='removeAuthorBook("book", "{{book.id}}")' class="card-link">Delete</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a class="card-link">Edit</a>
+                    <a onclick='removeAuthorBook("author", "{{author.id}}")' class="card-link">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <script>
+        function removeAuthorBook(cat, id){
+            window.location.href = 'remove?cat='+cat+'&id='+id;
+        };
+    </script>
+
+</div>
+
+{% endblock content %}

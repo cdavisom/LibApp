@@ -1,0 +1,72 @@
+{% extends '../layout/base.html' %}
+
+{% block title %}Authors Home Page{% endblock title %}
+{% block content %}
+    <div class="row m-3">
+        {% if last %}
+        <h5>Last Added/Updated: {{last.first_name}} {{last.last_name}}</h5>
+        {% endif %}
+        <div class="col-md-12 justify-content-md-center">
+            <div class="card">
+                <div class="card-header">Authors</div>
+                <div class="card-body">
+                    <h5 class="card-title edit"></h5>
+                    <form action="save" method="post">{% csrf_token %}
+                        <div class="row">
+                            <input type="hidden" name="id" id="author-id">
+                            <div class="col">
+                                <label for="first_name" class="form-label">Author's Frist Name</label>
+                                <input type="text" name="first_name" class="form-control" id="first_name">
+                            </div>
+                            <div class="col">
+                                <label for="last_name" class="form-label">Author's Last Name</label>
+                                <input type="text" name="last_name" class="form-control" id="last_name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="btn-group mt-2 col-4" role="group" aria-label="Basic example">
+                                <button type="submit" class="btn btn-outline-primary">Save</button>
+                                <button type="button" onclick="resetAuthor()" class="btn btn-outline-primary">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% for author in authors %}
+        <div class="col-auto mx-1 my-1">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">{{author.first_name}}</h6>
+                    <h6 class="card-title">{{author.last_name}}</h6>
+                    <a onclick='editAuthor("{{author.first_name}}", "{{author.last_name}}", "{{author.id}}")' class="card-link">Edit</a>
+                    <a onclick='removeAuthor("{{author.id}}")' class="card-link">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <script>
+        function editAuthor(first, last, id){
+            $(".edit").text("Editing: "+ first + " " + last);
+            $("#first_name").val(first);
+            $("#last_name").val(last);
+            $("#author-id").val(id);
+        };
+
+        function resetAuthor(){
+            $(".edit").text("");
+            $("#first_name").val("");
+            $("#last_name").val("");
+            $("#author-id").val("");
+        };
+
+        function removeAuthor(id){
+            window.location.href = 'remove?id='+id;
+        };
+    </script>
+    
+
+{% endblock content %}
